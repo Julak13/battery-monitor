@@ -1,5 +1,5 @@
 {
-  "version": "1.0.3",
-  "url": "https://julak13.github.io/battery-monitor/BatteryMonitor-1.0.3.bin",
-  "notes": "Fixed energy counters, added online updates"
+  "version": "1.0.4",
+  "url": "https://julak13.github.io/battery-monitor/BatteryMonitor-1.0.4.bin",
+  "notes": "Fixes Wi-Fi dropping to AP mode after a brief outage, plus false wiring alarms"
 }
