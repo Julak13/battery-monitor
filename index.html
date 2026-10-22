@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Battery Monitor Firmware</title>
+<style>
+  :root{
+    --bg:#0d1117; --card:#171d26; --line:#262d38;
+    --fg:#e6edf3; --fg2:#8b96a5; --fg3:#5d6773; --ok:#3fb950; --accent:#4b9fea;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .wrap{max-width:720px;margin:0 auto;padding:40px 20px 80px}
+  h1{font-size:28px;margin:0 0 6px}
+  .sub{color:var(--fg2);margin:0 0 28px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:20px;margin-bottom:16px}
+  h2{font-size:12px;letter-spacing:.9px;text-transform:uppercase;color:var(--fg2);
+    margin:0 0 12px;font-weight:700}
+  .ver{font-size:38px;font-weight:300;letter-spacing:-1px}
+  .kv{display:flex;justify-content:space-between;padding:8px 0;
+    border-bottom:1px solid var(--line);font-size:15px}
+  .kv:last-child{border-bottom:0}
+  .kv span{color:var(--fg2)}
+  code{background:#0d1117;border:1px solid var(--line);border-radius:6px;
+    padding:2px 7px;font-size:13px;color:#9dc7f2}
+  pre{background:#0d1117;border:1px solid var(--line);border-radius:10px;
+    padding:14px;overflow-x:auto;font-size:13px;color:#9dc7f2}
+  a{color:var(--accent)}
+  ol{padding-left:20px}
+  li{margin-bottom:8px}
+  .note{font-size:13.5px;color:var(--fg3);line-height:1.5}
+  footer{color:var(--fg3);font-size:12.5px;text-align:center;padding-top:30px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Battery Monitor Firmware</h1>
+  <p class="sub">Online updates for the 4S5P lithium-ion monitoring system</p>
+
+  <div class="card">
+    <h2>Current release</h2>
+    <div class="ver" id="ver">—</div>
+    <div class="note" id="notes" style="margin-top:6px"></div>
+    <p style="margin:18px 0 0"><a id="dl" href="#">Download the .bin</a></p>
+  </div>
+
+  <div class="card">
+    <h2>How your device updates</h2>
+    <div class="kv"><span>1. Device reads</span><b>firmware.json</b></div>
+    <div class="kv"><span>2. Compares against</span><b>its own version</b></div>
+    <div class="kv"><span>3. If different</span><b>offers to install</b></div>
+    <div class="kv"><span>4. Downloads into</span><b>the spare flash slot</b></div>
+    <div class="kv"><span>5. Then</span><b>reboots into it</b></div>
+    <p class="note" style="margin-top:14px">
+      Open the dashboard, go to <b>System → Firmware update</b> and press
+      <b>Check for updates</b>. The old firmware stays in the other slot until the
+      new one has been written completely, so a failed download cannot brick the board.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Publishing a new version</h2>
+    <ol>
+      <li>Build the binary:
+        <pre>arduino-cli compile --fqbn esp32:esp32:esp32:PartitionScheme=min_spiffs \
+  --output-dir build BatteryMonitor</pre>
+      </li>
+      <li>Rename <code>build/BatteryMonitor.ino.bin</code> to
+          <code>BatteryMonitor-&lt;version&gt;.bin</code>.</li>
+      <li>Copy it into this folder, beside <code>firmware.json</code>.</li>
+      <li>Edit <code>firmware.json</code>: set <code>version</code> to match
+          <code>FW_VERSION</code> in <code>config.h</code>, point <code>url</code>
+          at the new file, and write a short <code>notes</code> line.</li>
+      <li>Commit and push. GitHub Pages republishes in about a minute.</li>
+    </ol>
+    <p class="note">
+      The version string must match <code>FW_VERSION</code> exactly. The device
+      compares them as plain text, so <code>1.0.4</code> and <code>v1.0.4</code>
+      are different and it would offer the update again after installing.
+    </p>
+  </div>
+
+  <footer>
+    Monitoring instrument only — not a battery protection device.
+  </footer>
+</div>
+
+<script>
+fetch('firmware.json', {cache:'no-store'}).then(r => r.json()).then(m => {
+  document.getElementById('ver').textContent = m.version || '—';
+  document.getElementById('notes').textContent = m.notes || '';
+  const a = document.getElementById('dl');
+  a.href = m.url || '#';
+  a.textContent = 'Download ' + (m.url || '').split('/').pop();
+}).catch(() => {
+  document.getElementById('ver').textContent = 'manifest not found';
+});
+</script>
+</body>
+</html>
