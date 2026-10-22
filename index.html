@@ -3,101 +3,139 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Battery Monitor Firmware</title>
+<title>Battery Monitor Installer</title>
+<meta name="description" content="Install firmware on the 4S5P battery monitor straight from your browser.">
+<script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
 <style>
   :root{
     --bg:#0d1117; --card:#171d26; --line:#262d38;
-    --fg:#e6edf3; --fg2:#8b96a5; --fg3:#5d6773; --ok:#3fb950; --accent:#4b9fea;
+    --fg:#e6edf3; --fg2:#8b96a5; --fg3:#5d6773;
+    --ok:#3fb950; --warn:#e3a008; --crit:#f0503a; --accent:#4b9fea;
   }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--fg);
-    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  .wrap{max-width:720px;margin:0 auto;padding:40px 20px 80px}
-  h1{font-size:28px;margin:0 0 6px}
-  .sub{color:var(--fg2);margin:0 0 28px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--fg);line-height:1.6;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:40px 20px 70px}
+  h1{font-size:28px;line-height:1.25}
+  .sub{color:var(--fg2);margin-top:6px}
   .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
-    padding:20px;margin-bottom:16px}
+    padding:22px;margin-top:18px}
   h2{font-size:12px;letter-spacing:.9px;text-transform:uppercase;color:var(--fg2);
-    margin:0 0 12px;font-weight:700}
-  .ver{font-size:38px;font-weight:300;letter-spacing:-1px}
-  .kv{display:flex;justify-content:space-between;padding:8px 0;
+    margin-bottom:14px;font-weight:700}
+  .ver{display:inline-block;font-size:12px;padding:3px 10px;border-radius:999px;
+    border:1px solid rgba(63,185,80,.4);color:var(--ok);margin-left:8px;vertical-align:middle}
+  esp-web-install-button button.go{font:inherit;font-weight:650;font-size:17px;color:#08131f;
+    border:none;cursor:pointer;padding:15px 30px;border-radius:12px;background:var(--accent)}
+  esp-web-install-button button.go:hover{filter:brightness(1.08)}
+  .note{font-size:14px;color:var(--fg2);margin-top:14px}
+  .kv{display:flex;justify-content:space-between;padding:9px 0;
     border-bottom:1px solid var(--line);font-size:15px}
   .kv:last-child{border-bottom:0}
   .kv span{color:var(--fg2)}
+  ol{padding-left:20px}
+  li{margin:9px 0}
   code{background:#0d1117;border:1px solid var(--line);border-radius:6px;
     padding:2px 7px;font-size:13px;color:#9dc7f2}
-  pre{background:#0d1117;border:1px solid var(--line);border-radius:10px;
-    padding:14px;overflow-x:auto;font-size:13px;color:#9dc7f2}
+  .warn{border-color:rgba(227,160,8,.45);background:rgba(227,160,8,.07)}
+  .warn b{color:var(--warn)}
+  .info{border-color:rgba(75,159,234,.35);background:rgba(75,159,234,.07)}
+  .info b{color:var(--accent)}
   a{color:var(--accent)}
-  ol{padding-left:20px}
-  li{margin-bottom:8px}
-  .note{font-size:13.5px;color:var(--fg3);line-height:1.5}
-  footer{color:var(--fg3);font-size:12.5px;text-align:center;padding-top:30px}
+  footer{color:var(--fg3);font-size:13px;text-align:center;padding-top:28px}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Battery Monitor Firmware</h1>
-  <p class="sub">Online updates for the 4S5P lithium-ion monitoring system</p>
+  <h1>Battery Monitor Installer</h1>
+  <p class="sub">Install the firmware straight from this page. No Arduino software, no command line.</p>
 
   <div class="card">
-    <h2>Current release</h2>
-    <div class="ver" id="ver">—</div>
-    <div class="note" id="notes" style="margin-top:6px"></div>
-    <p style="margin:18px 0 0"><a id="dl" href="#">Download the .bin</a></p>
+    <h2>Install <span class="ver" id="ver">v1.0.3</span></h2>
+    <esp-web-install-button manifest="manifest.json">
+      <button slot="activate" class="go">&#x26A1; Connect &amp; install</button>
+      <span slot="unsupported">
+        This browser cannot talk to USB devices. Open this page in
+        <b>Google Chrome</b> or <b>Microsoft Edge</b> on a computer.
+      </span>
+      <span slot="not-allowed">
+        This page must be opened over https:// to install.
+      </span>
+    </esp-web-install-button>
+    <p class="note" id="notes"></p>
   </div>
 
   <div class="card">
-    <h2>How your device updates</h2>
-    <div class="kv"><span>1. Device reads</span><b>firmware.json</b></div>
-    <div class="kv"><span>2. Compares against</span><b>its own version</b></div>
-    <div class="kv"><span>3. If different</span><b>offers to install</b></div>
-    <div class="kv"><span>4. Downloads into</span><b>the spare flash slot</b></div>
-    <div class="kv"><span>5. Then</span><b>reboots into it</b></div>
-    <p class="note" style="margin-top:14px">
-      Open the dashboard, go to <b>System → Firmware update</b> and press
-      <b>Check for updates</b>. The old firmware stays in the other slot until the
-      new one has been written completely, so a failed download cannot brick the board.
+    <h2>Before you start</h2>
+    <div class="kv"><span>Computer</span><b>Windows, Mac or Linux</b></div>
+    <div class="kv"><span>Browser</span><b>Chrome or Edge</b></div>
+    <div class="kv"><span>Cable</span><b>USB data cable</b></div>
+    <div class="kv"><span>Time</span><b>About one minute</b></div>
+    <p class="note">
+      A phone will not work, and neither will Safari or Firefox — only Chrome and
+      Edge can reach a USB port from a web page. Some charging cables carry power
+      but no data; if the board never appears in the list, try a different cable.
     </p>
   </div>
 
   <div class="card">
-    <h2>Publishing a new version</h2>
+    <h2>Steps</h2>
     <ol>
-      <li>Build the binary:
-        <pre>arduino-cli compile --fqbn esp32:esp32:esp32:PartitionScheme=min_spiffs \
-  --output-dir build BatteryMonitor</pre>
-      </li>
-      <li>Rename <code>build/BatteryMonitor.ino.bin</code> to
-          <code>BatteryMonitor-&lt;version&gt;.bin</code>.</li>
-      <li>Copy it into this folder, beside <code>firmware.json</code>.</li>
-      <li>Edit <code>firmware.json</code>: set <code>version</code> to match
-          <code>FW_VERSION</code> in <code>config.h</code>, point <code>url</code>
-          at the new file, and write a short <code>notes</code> line.</li>
-      <li>Commit and push. GitHub Pages republishes in about a minute.</li>
+      <li>Plug the battery monitor into the computer with the USB cable.</li>
+      <li>Press <b>Connect &amp; install</b> above.</li>
+      <li>A small window lists the serial ports. Pick the one that appears when you
+          plug the board in — usually named <code>CP210x</code>, <code>CH340</code>
+          or <code>USB Serial</code>.</li>
+      <li>Press <b>Install</b> and wait. Do not unplug it.</li>
+      <li>When it finishes, the board restarts on its own.</li>
     </ol>
-    <p class="note">
-      The version string must match <code>FW_VERSION</code> exactly. The device
-      compares them as plain text, so <code>1.0.4</code> and <code>v1.0.4</code>
-      are different and it would offer the update again after installing.
+  </div>
+
+  <div class="card info">
+    <h2>Your settings are kept</h2>
+    <p class="note" style="margin-top:0">
+      <b>This does not erase your calibration.</b> The voltage calibration, alarm
+      settings and the lifetime energy totals are stored in a separate area of
+      memory that the installer leaves alone. If a prompt ever offers to erase the
+      device, say no — erasing means re-doing the calibration with a multimeter.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>After this first install</h2>
+    <p class="note" style="margin-top:0">
+      You only need the cable once. From then on the monitor updates itself over
+      Wi-Fi: open its dashboard, go to <b>System &rarr; Firmware update</b> and
+      press <b>Check for updates</b>. It reads
+      <a href="firmware.json">firmware.json</a> from this same site and installs
+      anything newer by itself.
+    </p>
+  </div>
+
+  <div class="card warn">
+    <h2>If it will not connect</h2>
+    <p class="note" style="margin-top:0">
+      <b>No ports listed:</b> the USB-to-serial driver is missing. Install the
+      <a href="https://www.silabs.com/developer-tools/usb-to-uart-bridge-vcp-drivers">CP210x</a>
+      or <a href="https://www.wch-ic.com/downloads/CH341SER_EXE.html">CH340</a> driver,
+      then unplug and plug the board back in.<br><br>
+      <b>Fails part-way:</b> hold the <b>BOOT</b> button on the board, press
+      <b>Install</b>, and release BOOT once it starts writing.<br><br>
+      <b>Still stuck:</b> try a different USB cable before anything else. It is the
+      most common cause by a wide margin.
     </p>
   </div>
 
   <footer>
-    Monitoring instrument only — not a battery protection device.
+    Monitoring instrument only &mdash; not a battery protection device.
   </footer>
 </div>
 
 <script>
 fetch('firmware.json', {cache:'no-store'}).then(r => r.json()).then(m => {
-  document.getElementById('ver').textContent = m.version || '—';
-  document.getElementById('notes').textContent = m.notes || '';
-  const a = document.getElementById('dl');
-  a.href = m.url || '#';
-  a.textContent = 'Download ' + (m.url || '').split('/').pop();
-}).catch(() => {
-  document.getElementById('ver').textContent = 'manifest not found';
-});
+  if (m.version) document.getElementById('ver').textContent = 'v' + m.version;
+  if (m.notes) document.getElementById('notes').textContent = m.notes;
+}).catch(() => {});
 </script>
 </body>
 </html>
