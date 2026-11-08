@@ -1,5 +1,5 @@
-{
-  "version": "1.0.4",
-  "url": "https://julak13.github.io/battery-monitor/BatteryMonitor-1.0.4.bin",
-  "notes": "Fixes Wi-Fi dropping to AP mode after a brief outage, plus false wiring alarms"
+﻿{
+  "version": "1.0.5",
+  "url": "https://julak13.github.io/battery-monitor/BatteryMonitor-1.0.5.bin",
+  "notes": "Recovers automatically from an I2C bus lockup"
 }
