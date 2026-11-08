@@ -1,5 +1,5 @@
 {
-  "version": "1.0.5",
-  "url": "https://julak13.github.io/battery-monitor/BatteryMonitor-1.0.5.bin",
-  "notes": "Recovers automatically from an I2C bus lockup"
+  "version": "1.0.6",
+  "url": "https://julak13.github.io/battery-monitor/BatteryMonitor-1.0.6.bin",
+  "notes": "Fixes the update check and push notifications failing with HTTP 0"
 }
