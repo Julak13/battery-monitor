@@ -1,15 +1,15 @@
 {
   "name": "Battery Monitor",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "new_install_prompt_erase": false,
   "builds": [
     {
       "chipFamily": "ESP32",
       "parts": [
-        { "path": "firmware/v1.0.6/bootloader.bin", "offset": 4096 },
-        { "path": "firmware/v1.0.6/partitions.bin", "offset": 32768 },
-        { "path": "firmware/v1.0.6/boot_app0.bin",  "offset": 57344 },
-        { "path": "firmware/v1.0.6/firmware.bin",   "offset": 65536 }
+        { "path": "firmware/v1.0.7/bootloader.bin", "offset": 4096 },
+        { "path": "firmware/v1.0.7/partitions.bin", "offset": 32768 },
+        { "path": "firmware/v1.0.7/boot_app0.bin",  "offset": 57344 },
+        { "path": "firmware/v1.0.7/firmware.bin",   "offset": 65536 }
       ]
     }
   ]

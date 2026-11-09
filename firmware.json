@@ -1,5 +1,5 @@
 {
-  "version": "1.0.6",
-  "url": "https://julak13.github.io/battery-monitor/BatteryMonitor-1.0.6.bin",
-  "notes": "Fixes the update check and push notifications failing with HTTP 0"
+  "version": "1.0.7",
+  "url": "https://julak13.github.io/battery-monitor/BatteryMonitor-1.0.7.bin",
+  "notes": "Thermistor enabled on GPIO34 - temperature is now a real measurement"
 }
